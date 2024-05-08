@@ -1,19 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext} from "react";
 import './Shop.css'
 import Product from "./Product";
+import { ShopContext } from "../../context/shop-context";
 
 const Shop = () => {
-  const [items, setitems] = useState([]);
+  
+  const {items,isLoading}=useContext(ShopContext);
 
-  useEffect(() => {
-    const fetchdata = () => {
-      fetch("https://fakestoreapi.com/products?limit=20")
-        .then((res) => res.json())
-        .then((json) => setitems(json));
-    };
-    fetchdata();
-  }, []);
-
+  if (isLoading) {
+    return <p>Loading cart items...</p>; 
+  }
+  
   return (
     <div className="shop">
       <div className="shopname">
