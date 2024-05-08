@@ -1,9 +1,9 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useEffect, useState } from "react";
 
-export const ShopContext=createContext(null);
+export const ShopContext = createContext(null);
 
 // {
-   // id:count
+// id:count
 //     1:0,
 //     2:0,
 //     3:0
@@ -12,30 +12,53 @@ export const ShopContext=createContext(null);
 //     .
 // }
 
-const getDefaultCart=()=>{
-    let cart={};
-    for(let i=1;i<21;i++){
-        cart[i]=0;
-    }
-    return cart;
+const getDefaultCart = () => {
+  let cart = {};
+  for (let i = 1; i < 21; i++) {
+    cart[i] = 0;
+  }
+  return cart;
 };
 
 const ShopContextProvider = (props) => {
-    const [cartItems,setCartItems]=useState(getDefaultCart);
-    
-   console.log(cartItems);
+  const [cartItems, setCartItems] = useState(getDefaultCart);
+  const [items, setItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const addtocart=(ItemId)=>{
-        setCartItems((prev)=>({...prev,[ItemId]:prev[ItemId]+1}))
-    }
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true); 
+      try {
+        const response = await fetch("https://fakestoreapi.com/products?limit=20");
+        const data = await response.json();
+        setItems(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setIsLoading(false); 
+      }
+    };
 
-    const removefromcart=(ItemId)=>{
-        setCartItems((prev)=>({...prev,[ItemId]:prev[ItemId]-1}))
-    }
+    fetchData();
+  }, []);
 
-    const contextValue={cartItems,addtocart,removefromcart}
+  console.log(cartItems);
 
-  return <ShopContext.Provider value={contextValue}>{props.children}</ShopContext.Provider>
-}
+  const addtocart = (ItemId) => {
+    setCartItems((prev) => ({ ...prev, [ItemId]: prev[ItemId] + 1 }));
+  };
 
-export default ShopContextProvider
+  const removefromcart = (ItemId) => {
+    setCartItems((prev) => ({ ...prev, [ItemId]: prev[ItemId] - 1 }));
+  };
+
+  const contextValue = { items,isLoading,cartItems, addtocart, removefromcart };
+
+  return (
+    <ShopContext.Provider value={contextValue}>
+      {props.children}
+    </ShopContext.Provider>
+  );
+};
+
+export default ShopContextProvider;
