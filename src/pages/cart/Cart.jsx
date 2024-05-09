@@ -1,12 +1,16 @@
 import React, { useContext } from "react";
 import { ShopContext } from "../../context/shop-context";
 import CartItem from "./CartItem";
-import './Cart.css'
+import "./Cart.css";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { items, isLoading, cartItems } = useContext(ShopContext);
+  const { gettotalamount, items, isLoading, cartItems } = useContext(ShopContext);
 
   console.log(items);
+  const nav=useNavigate();
+
+  const totalamount=gettotalamount();
 
   if (isLoading) {
     return <p>Loading cart items...</p>; // Placeholder for loading state
@@ -27,6 +31,17 @@ const Cart = () => {
           return null;
         })}
       </div>
+
+     { (totalamount>0)?(
+     <div className="checkout">
+        <p>Subtotal:${totalamount}</p>
+        <button onClick={()=>nav('/')}>Continue Shopping</button>
+        <button>Checkout</button>
+      </div>
+     ):(
+        <h1 className="noitem">No items added to cart</h1>
+      )}
+      
     </div>
   );
 };
