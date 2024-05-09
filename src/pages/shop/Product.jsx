@@ -13,8 +13,11 @@ const Product = ({ item }) => {
       <div className="itemimage">
         <img src={item.image} alt="image1"></img>
       </div>
+      <p className="item-price">{item.title}</p>
       <p className="itemdes">{item.description}</p>
-      <p>Price: ${item.price}</p>
+      <div>
+      <p className="item-price">Price: ${item.price}</p>
+      </div>
       <button onClick={()=>addtocart(item.id)}>Add to Cart {cartItems[item.id]>0?<>({cartItems[item.id]})</>:null}</button>
     </div>
   );
